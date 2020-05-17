@@ -48,12 +48,13 @@
     <script>
       var c=document.getElementById("myCanvas");
       var ctx=c.getContext("2d");
+      //长方形
       ctx.fillStyle="#DE2910";
       ctx.fillRect(0,0,660,440);
-
+      //大五角星
       ctx.fillStyle="#FFDE00";
       drawStar(ctx, 44, 88, 117.33, 0);
-      
+      //小五角星
       var starF = [77/3, 11/3, 737/3, 671/3];
       for (var j = 0; j < starF.length; j++){
         var rot = 18 + j * 15;
