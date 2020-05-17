@@ -38,8 +38,6 @@
       }
     </style>
 
-  </head>
-  <body style="background-color:white">
 
     <!--画布canvas-->
     <canvas id="myCanvas" width="1000" height="500" style="border:1px solid #c3c3c3;">
@@ -73,10 +71,23 @@
         ctx.fill();
       }
     </script>
+    <br />
+    <br />
+    <br />
+    <script src="test.js"></script>
+    <br />
+    <br />
+    <br />
+  </head>
 
 
 
 
+
+
+
+
+  <body style="background-color:white">
 
     <div id="header">
       <h1>HOMEPAGE</h1>
@@ -98,9 +109,14 @@
         <p>
           Hypertext Markup Language (HTML) is the standard markup language for documents designed to be displayed in a web browser. It can be assisted by technologies such as Cascading Style Sheets (CSS) and scripting languages such as JavaScript.
         </p>
-        <p>
+        <p id="pid">
           Web browsers receive HTML documents from a web server or from local storage and render the documents into multimedia web pages. HTML describes the structure of a web page semantically and originally included cues for the appearance of the document.
         </p>
+        <script>
+        //用JavaScript改变HTML内容
+        document.getElementById("pid").innerHTML="123";
+        </script>
+
     </div>
 
     <div id="section">
@@ -109,8 +125,6 @@
     <div id="section">
       <h2>JavaScript</h2>
     </div>
-
-
 
 
     <div id="footer">
