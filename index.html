@@ -51,9 +51,16 @@
       ctx.fillStyle="#DE2910";
       ctx.fillRect(0,0,660,440);
 
-      ctx.fillStyle="#FFDE00"
+      ctx.fillStyle="#FFDE00";
       drawStar(ctx, 44, 88, 117.33, 0);
 
+      var starF = [77/3, 11/3, 737/3, 671/3];
+      for (var j = 0; j < starF.length; j++){
+        var rot = 18 + j * 15;
+        var x = Math.cos( starF[j]/132 * Math.PI ) * 132 + 88;
+        var y = -Math.sin( starF[j]/132 * Math.PI ) * 132 + 352/3;
+        drawStar(ctx, 44/2.4, x, y, rot);
+      }
 
       function drawStar(ctx,R,x,y,rot){
         ctx.beginPath();
