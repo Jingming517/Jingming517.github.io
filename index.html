@@ -40,6 +40,22 @@
 
   </head>
   <body style="background-color:white">
+
+    <!--画布canvas-->
+    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">
+    </canvas>
+
+    <script>
+      var c=document.getElementById("myCanvas");
+      var ctx=c.getContext("2d");
+      ctx.fillStyle="#FF0000";
+      ctx.fillRect(0,0,150,100); 
+    </script>
+
+
+
+
+
     <div id="header">
       <h1>HOMEPAGE</h1>
     </div>
