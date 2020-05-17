@@ -42,14 +42,28 @@
   <body style="background-color:white">
 
     <!--画布canvas-->
-    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">
+    <canvas id="myCanvas" width="1000" height="500" style="border:1px solid #c3c3c3;">
     </canvas>
-
+    <!--HTML5-->
     <script>
       var c=document.getElementById("myCanvas");
       var ctx=c.getContext("2d");
-      ctx.fillStyle="#FF0000";
-      ctx.fillRect(0,0,150,100); 
+      ctx.fillStyle="#DE2910";
+      ctx.fillRect(0,0,660,440);
+
+      ctx.fillStyle="#FFDE00"
+      drawStar(ctx, 44, 88, 117.33, 0);
+
+
+      function drawStar(ctx,R,x,y,rot){
+        ctx.beginPath();
+        for (var i = 0; i < 5; i++ ) {
+            ctx.lineTo(Math.cos((18+i*72-rot)/180*Math.PI)*R + x,-Math.sin((18+i*72-rot)/180*Math.PI)*R + y);
+            ctx.lineTo(Math.cos((54+i*72-rot)/180*Math.PI)*R/2.4 + x,-Math.sin((54+i*72-rot)/180*Math.PI)*R/2.4 + y);
+        };
+        ctx.closePath();
+        ctx.fill();
+      }
     </script>
 
 
