@@ -1,2 +1,2 @@
+//JS按照编写顺序执行
 document.write("Hello World");
-document.getElementById("pid").innerHTML="123";
