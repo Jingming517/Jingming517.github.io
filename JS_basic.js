@@ -20,14 +20,23 @@ document.write(typeof "john");   //查看数据类型
 
 
 //对象 Object
-var person={
-	name:"Java",
+ person={
+	name:"PersonName",
 	age:20,
+	/*
 	eat:function(){
 		alert("EAT")
-	}
+	}*/
 }
 document.write(person.age+"</br>");
+var x;
+var txt = "";
+for (x in person) {  //for...in 循环中的代码块会为每个属性执行一次。
+    txt += person[x] + " ";
+}
+document.write(txt);
+
+
 
 //数组 Array
 var cars=new Array();
@@ -75,3 +84,6 @@ function reFunction() {
     var txt = str.replace(/没有感情/i,"真情实感");
     document.getElementById("demo").innerHTML = txt;
 }
+
+//this
+//面向对象语言中 this 表示当前对象的一个引用。
