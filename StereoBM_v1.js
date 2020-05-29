@@ -28,7 +28,7 @@ function StereoBM()
 
 	function loadRightImage(){
 		var imageright = new Image();
-		imageleft.onload = function(){
+		imageright.onload = function(){
 			var _imgr = {
 				imgr: imageright,
 				xr: 0,
