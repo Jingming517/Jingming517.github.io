@@ -16,8 +16,8 @@ class IO{
  LoadPics(){
   var imgLeft = new Image();
   var imgRight = new Image();
-  LoadImage(imgLeft, this.ContextLeft, 'LeftImg.png');
-  LoadImage(imgRight, this.ContextRight, 'RightImg.png');
+  this.LoadImage(imgLeft, this.ContextLeft, 'LeftImg.png');
+  this.LoadImage(imgRight, this.ContextRight, 'RightImg.png');
  }
  LoadImage(img, cxt, src){
   img.onLoad = function(){
