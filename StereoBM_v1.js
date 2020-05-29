@@ -12,7 +12,7 @@ class IO{
   this.ContextOut = this.CanvasOut.getContext("2d") || {};
   this.LoadButton = {};
   this.BMButton = {};
- 
+ }
 
 
 LoadPics(){
@@ -26,7 +26,7 @@ LoadPics(){
  }
 
 
- 
+
  StereoBM()
  {   
   var sp = new StereoProcessor(this.CanvasOut);
