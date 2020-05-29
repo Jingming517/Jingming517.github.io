@@ -12,20 +12,21 @@ class IO{
   this.ContextOut = this.CanvasOut.getContext("2d") || {};
   this.LoadButton = {};
   this.BMButton = {};
- }
- LoadPics(){
+ 
+
+
+LoadPics(){
+  var that = this;
   var imgLeft = new Image();
+  imgLeft.onLoad = function(){ that.ContextLeft.drawImage(imgLeft, 0, 0); }
+  imgLeft.src = 'LeftImg.png';
   var imgRight = new Image();
-  this.LoadImage(imgLeft, this.ContextLeft, 'LeftImg.png');
-  this.LoadImage(imgRight, this.ContextRight, 'RightImg.png');
+  imgRight.onLoad = function(){ that.ContextRight.drawImage(imgRight, 0, 0); }
+  imgRight.src = 'RightImg.png';
  }
- LoadImage(img, cxt, src){
-  img.onLoad = function(){
-   var _img_ = { _img: img, x: 0, y: 0 }
-   cxt.drawImage(_img_._img, _img_.x, _img_.y)
-  }
-  img.src = src;
- }
+
+
+ 
  StereoBM()
  {   
   var sp = new StereoProcessor(this.CanvasOut);
