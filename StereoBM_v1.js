@@ -16,13 +16,19 @@ class IO{
 
 
 LoadPics(){
-  var that = this;
-  var imgLeft = new Image();
-  imgLeft.onLoad = function(){ that.ContextLeft.drawImage(imgLeft, 0, 0); }
-  imgLeft.src = 'LeftImg.png';
-  var imgRight = new Image();
-  imgRight.onLoad = function(){ that.ContextRight.drawImage(imgRight, 0, 0); }
-  imgRight.src = 'RightImg.png';
+	var ctxL = this.ContextLeft;
+	var ctxR = this.ContextRight;
+	var imgLeft = new Image();
+	imgLeft.onLoad = function(){
+		ctxL.drawImage(imgLeft, 0, 0);
+		ctxL.fillStyle = "rgba(200, 0, 0, 0.5)";
+		ctxL.fillRect(0, 0, 200, 200);
+	}
+	imgLeft.src = 'LeftImg.png';
+	var that = this;
+	var imgRight = new Image();
+	imgRight.onLoad = function(){that.ContextRight.drawImage(imgRight, 0, 0); }
+	imgRight.src = 'RightImg.png';
  }
 
 
