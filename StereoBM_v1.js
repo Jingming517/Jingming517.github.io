@@ -2,117 +2,54 @@ import {IMAGE_SETTINGS, StereoProcessor,Picture} from './lib/images.js';
 
 "use strict";
 
-function LoadPics(cxtl, cxtr){
- function loadLeftImage(){
-  var imageleft = new Image();
-  imageleft.onload = function(){
-   var _imgl = {
-    imgl: imageleft,
-    xl: 0,
-    yl: 0
-   }
-   ctxl.drawImage(_imgl.imgl, _imgl.xl, _imgl.yl)
-  }
-  imageleft.src = 'LeftImg.png'
+class IO{
+ constructor(cL, cR, cOut){
+  this.CanvasLeft = cL || {};
+  this.CanvasRight = cR || {};
+  this.CanvasOut = cOut || ();
+  this.ContextLeft = this.CanvasLeft.getContext("2d") || {};
+  this.ContextRight = this.CanvasRight.getContext("2d") || {};
+  this.ContextOut = this.CanvasOut.getContext("2d") || {};
+  this.LoadButton = {};
+  this.BMButton = {};
  }
- function loadRightImage(){
-  var imageright = new Image();
-  imageright.onload = function(){
-   var _imgr = {
-    imgr: imageright,
-    xr: 0,
-    yr: 0
-   }
-   ctxr.drawImage(_imgr.imgr, _imgr.xr, _imgr.yr)
-  }
-  imageright.src = 'RightImg.png'
+ LoadPics(){
+  var imgLeft = new Image();
+  var imgRight = new Image();
+  LoadImage(imgLeft, this.ContextLeft, 'LeftImg.png');
+  LoadImage(imgRight, this.ContextRight, 'RightImg.png');
  }
- loadLeftImage();
- loadRightImage();
- let buttonBM = document.getElementById("btn_bm");
- buttonBM.addEventListener("click",StereoBM(c, cl, cr),false);
-}
-
-function StereoBM(c, cl, cr)
-{   
- var sp = new StereoProcessor(c);
- sp.LoadImagesFromCanvas(cl, cr);
- var depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
- sp.OutputContext.putImageData(depthmap.ToImgData(),0,0);
+ LoadImage(img, cxt, src){
+  img.onLoad = function(){
+   var _img_ = { _img: img, x: 0, y: 0 }
+   cxt.drawImage(_img_._img, _img_.x, _img_.y)
+  }
+  img.src = src;
+ }
+ StereoBM()
+ {   
+  var sp = new StereoProcessor(this.CanvasOut);
+  sp.LoadImagesFromCanvas(this.CanvasLeft, this.CanvasRight);
+  var depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
+  sp.OutputContext.putImageData(depthmap.ToImgData(),0,0);
+ }
+ AddButtons(btn_load, btn_bm){
+  this.LoadButton = btn_load;
+  this.LoadButton.addEventListener("click", this.LoadPics, false);
+  this.BMButton = btn_bm;
+  this.BMButton.addEventListener("click", this.StereoBM, false);
+ }
 }
 
 (function(){
  var cl=document.getElementById("Canvas_leftimg");     
- var ctxl=cl.getContext("2d");
  var cr=document.getElementById("Canvas_rightimg");     
- var ctxr=cr.getContext("2d");
  var c = document.getElementById("canvas");
- var ctx=c.getContext("2d");
- let buttonLoad = document.getElementById("btn_load");
- buttonLoad.addEventListener("click",LoadPics(cxtl, cxtr), false);
+ var buttonLoad = document.getElementById("btn_load");
+ var buttonBM = document.getElementById("btn_bm");
+ var myIO = new IO(cl, cr, c);
+ myIO.AddButtons(buttonLoad, buttonBM);
 })();
 
 
 
-
-
-
-/*
-
-import {IMAGE_SETTINGS, StereoProcessor,Picture} from './lib/images.js';
-
-"use strict";
-function load(){
-	
-}
-
-function StereoBM()
-{   
-	var c1=document.getElementById("Canvas_leftimg");     
-	var ctx1=c1.getContext("2d");
-	var c2=document.getElementById("Canvas_rightimg");     
-	var ctx2=c2.getContext("2d");
-	//output image
-	var c = document.getElementById("canvas");
-	var ctx=c.getContext("2d");
-
-	function loadLeftImage(){
-		var imageleft = new Image();
-		imageleft.onload = function(){
-			var _imgl = {
-				imgl: imageleft,
-				xl: 0,
-				yl: 0
-			}
-			ctx1.drawImage(_imgl.imgl, _imgl.xl, _imgl.yl)
-		}
-		imageleft.src = 'LeftImg.png'
-	}
-	loadLeftImage();
-
-	function loadRightImage(){
-		var imageright = new Image();
-		imageright.onload = function(){
-			var _imgr = {
-				imgr: imageright,
-				xr: 0,
-				yr: 0
-			}
-			ctx2.drawImage(_imgr.imgr, _imgr.xr, _imgr.yr)
-		}
-		imageright.src = 'RightImg.png'
-	}
-	loadRightImage();
-
-	//
-	var sp = new StereoProcessor(canvas);
-	sp.LoadImagesFromCanvas(c1, c2);
-	var depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
-	ctx.putImageData(depthmap.ToImgData(),0,0);
-}
-
-(function(){
-let button = document.getElementById("Button1");
-button.addEventListener("click",StereoBM,false);
-})();
-*/
