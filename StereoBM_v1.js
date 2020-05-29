@@ -42,7 +42,7 @@ function StereoBM()
 
 	var sp = new StereoProcessor(canvas);
 	sp.LoadImagesFromCanvas(c1, c2);
-	Picture depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
+	var depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
 	ctx.putImageData(depthmap.ToImageData());
 }
 
