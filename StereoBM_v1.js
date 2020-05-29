@@ -1,4 +1,4 @@
-import {IMAGE_SETTINGS, StereoProcessor，Picture} from './lib/images.js';
+import {IMAGE_SETTINGS, StereoProcessor,Picture} from './lib/images.js';
 
 "use strict";
 
