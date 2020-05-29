@@ -2,6 +2,11 @@ import {IMAGE_SETTINGS, StereoProcessor,Picture} from './lib/images.js';
 
 "use strict";
 function load(){
+	
+}
+
+function StereoBM()
+{   
 	var c1=document.getElementById("Canvas_leftimg");     
 	var ctx1=c1.getContext("2d");
 	var c2=document.getElementById("Canvas_rightimg");     
@@ -37,10 +42,8 @@ function load(){
 		imageright.src = 'RightImg.png'
 	}
 	loadRightImage();
-}
 
-function StereoBM()
-{   
+	//
 	var sp = new StereoProcessor(canvas);
 	sp.LoadImagesFromCanvas(c1, c2);
 	var depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
