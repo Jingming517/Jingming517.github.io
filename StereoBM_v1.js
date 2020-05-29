@@ -6,7 +6,7 @@ class IO{
  constructor(cL, cR, cOut){
   this.CanvasLeft = cL || {};
   this.CanvasRight = cR || {};
-  this.CanvasOut = cOut || ();
+  this.CanvasOut = cOut || {};
   this.ContextLeft = this.CanvasLeft.getContext("2d") || {};
   this.ContextRight = this.CanvasRight.getContext("2d") || {};
   this.ContextOut = this.CanvasOut.getContext("2d") || {};
