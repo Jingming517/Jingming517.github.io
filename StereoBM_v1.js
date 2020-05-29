@@ -35,9 +35,9 @@ class IO{
  }
  AddButtons(btn_load, btn_bm){
   this.LoadButton = btn_load;
-  this.LoadButton.addEventListener("click", this.LoadPics, false);
+  this.LoadButton.addEventListener("click", this.LoadPics.bind(this), false);
   this.BMButton = btn_bm;
-  this.BMButton.addEventListener("click", this.StereoBM, false);
+  this.BMButton.addEventListener("click", this.StereoBM.bind(this), false);
  }
 }
 
