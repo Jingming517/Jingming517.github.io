@@ -16,14 +16,12 @@ class IO{
 
 
 LoadPics(){
-	var ctxL = this.ContextLeft;
-	var ctxR = this.ContextRight;
-	var imgLeft = new Image();
-	imgLeft.onload = function(){
-		ctxL.drawImage(imgLeft, 0, 0);
-	}
-	imgLeft.src = 'LeftImg.png';
+
 	var that = this;
+	var imgLeft = new Image();
+	imgLeft.onload = function(){that.ContextLeft.drawImage(imgLeft, 0, 0);}
+	imgLeft.src = 'LeftImg.png';
+	
 	var imgRight = new Image();
 	imgRight.onload = function(){that.ContextRight.drawImage(imgRight, 0, 0); }
 	imgRight.src = 'RightImg.png';
