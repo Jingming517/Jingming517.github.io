@@ -20,6 +20,7 @@ LoadPics(){
 	var ctxR = this.ContextRight;
 	var imgLeft = new Image();
 	imgLeft.onLoad = function(){
+		alert("leftimgload");
 		ctxL.drawImage(imgLeft, 0, 0);
 		ctxL.fillStyle = "rgba(200, 0, 0, 0.5)";
 		ctxL.fillRect(0, 0, 200, 200);
