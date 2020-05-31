@@ -16,7 +16,6 @@ class IO{
 
 
 LoadPics(){
-
 	var that = this;
 	var imgLeft = new Image();
 	imgLeft.onload = function(){that.ContextLeft.drawImage(imgLeft, 0, 0);}
