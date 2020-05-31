@@ -54,4 +54,14 @@ LoadPics(){
 })();
 
 
+function checkForImg() {
+  var params = window.location.search;
+  var imgFile;
+  if (params !== '' && params.indexOf("img=") > -1) {
+    imgFile = params.substring(params.indexOf("img=") + 4);
+    canvas.loadImg('uploads/' + imgFile);
+  }
+}
+checkForImg();
+
 

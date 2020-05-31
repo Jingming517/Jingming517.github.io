@@ -9,6 +9,10 @@
         
 
     <body>
+        <form action="/upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+            <input type="file" name="image-upload" />
+            <input type="submit" value="Upload Image" />
+        </form>
         
         <canvas id="Canvas_leftimg" width="400" height="300" style="border:1px solid #d3d3d3;"></canvas>
         <canvas id="Canvas_rightimg" width="400" height="300" style="border:1px solid #d3d3d3;"></canvas>
