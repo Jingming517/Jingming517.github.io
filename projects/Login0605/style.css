@@ -1,30 +1,16 @@
 body 
 {
+	background-image:url('img/background.png');
 	background-color:#cccccc;
 }
 
-div.main {
-	width: 70%;
+div {
+	width: 900px;
 	border-radius: 5px;
 	background-color: #f2f2f2;
 	padding: 20px;
 	margin:0 auto;
 }
-div.half-left {
-	width: 50%;
-	height: 300px;
-	background-color: #f2f2f23d;
-	float: left;
-	border-style: solid; 
-	border-width: 0px;
-	border-color: #4CAF50;
-}
-
-h1 {
-	font: 1em sans-serif;
-}
-
-
 a.su {
 	color: #4CAF50;
 	font: 1em sans-serif;
@@ -35,19 +21,19 @@ a.su:hover {
 }
 
 
-ul.nav {
+ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-	background-color: #333;
+    background-color: #333;
 }
 
-li.nav {
-	float: left;
+li {
+    float: left;
 }
 
-li.nav a {
+li a {
     display: block;
     color: white;
     text-align: center;
@@ -55,16 +41,8 @@ li.nav a {
     text-decoration: none;
 }
 
-li.nav a:hover {
+li a:hover {
     background-color: #111;
-}
-
-ul.vertical-list {
-	background-color: white;	
-}
-li.vertical-list {
-	font: 1em sans-serif;
-	float: center;
 }
 
 
