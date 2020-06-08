@@ -1,6 +1,5 @@
 body 
 {
-	background-image:url('img/background.png');
 	background-color:#cccccc;
 }
 
@@ -11,6 +10,12 @@ div {
 	padding: 20px;
 	margin:0 auto;
 }
+
+h1 {
+	font: 1em sans-serif;
+}
+
+
 a.su {
 	color: #4CAF50;
 	font: 1em sans-serif;
@@ -21,19 +26,19 @@ a.su:hover {
 }
 
 
-ul {
+ul.nav {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+	background-color: #333;
 }
 
-li {
-    float: left;
+li.nav {
+	float: left;
 }
 
-li a {
+li.nav a {
     display: block;
     color: white;
     text-align: center;
@@ -41,8 +46,16 @@ li a {
     text-decoration: none;
 }
 
-li a:hover {
+li.nav a:hover {
     background-color: #111;
+}
+
+ul.vertical-list {
+	background-color: white;	
+}
+li.vertical-list {
+	font: 1em sans-serif;
+	float: center;
 }
 
 
