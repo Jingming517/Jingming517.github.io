@@ -18,11 +18,11 @@ class IO{
 LoadPics(){
 	var that = this;
 	var imgLeft = new Image();
-	imgLeft.onload = function(){that.ContextLeft.drawImage(imgLeft, 0, 0);}
+	imgLeft.onload = function(){that.ContextLeft.drawImage(imgLeft, 0, 0, that.ContextLeft.canvas.width, that.ContextLeft.canvas.height);}
 	imgLeft.src = 'LeftImg.jpeg';
 	
 	var imgRight = new Image();
-	imgRight.onload = function(){that.ContextRight.drawImage(imgRight, 0, 0); }
+	imgRight.onload = function(){that.ContextRight.drawImage(imgRight, 0, 0, that.ContextRight.canvas.width, that.ContextRight.canvas.height); }
 	imgRight.src = 'RightImg.jpeg';
  }
 
@@ -31,7 +31,7 @@ LoadPics(){
  StereoBM()
  {   
   var sp = new StereoProcessor(this.CanvasOut);
-  sp.LoadImagesFromCanvas(this.CanvasLeft, this.CanvasRight);
+  sp.LoadImagesFromCanvas(this.CanvasLeft, this.CanvasRight);  //check-correct data
   var depthmap = sp.GetDepthMap(80, 0.5, 0.05, 0.10);
   sp.OutputContext.putImageData(depthmap.ToImgData(),0,0);
  }
@@ -54,14 +54,6 @@ LoadPics(){
 })();
 
 
-function checkForImg() {
-  var params = window.location.search;
-  var imgFile;
-  if (params !== '' && params.indexOf("img=") > -1) {
-    imgFile = params.substring(params.indexOf("img=") + 4);
-    canvas.loadImg('uploads/' + imgFile);
-  }
-}
-checkForImg();
+
 
 

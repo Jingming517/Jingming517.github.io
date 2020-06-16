@@ -1,10 +1,10 @@
 export const IMAGE_SETTINGS = {
-    "LEFT_IMG_WIDTH": 400.,
-    "LEFT_IMG_HEIGHT": 300.,
-    "RIGHT_IMG_WIDTH": 400.,
-    "RIGHT_IMG_HEIGHT": 300.,
-    "OUTPUT_IMG_WIDTH": 400.,
-    "OUTPUT_IMG_HEIGHT": 300.,
+    "LEFT_IMG_WIDTH": 600.,
+    "LEFT_IMG_HEIGHT": 480.,
+    "RIGHT_IMG_WIDTH": 600.,
+    "RIGHT_IMG_HEIGHT": 480.,
+    "OUTPUT_IMG_WIDTH": 600.,
+    "OUTPUT_IMG_HEIGHT": 480.,
     "EDGE_THRESHOLD": 50000.,  //need to test
     "DISP_THRESHLOD": 10.,
     "KERNAL_GAUSSIAN3x3": [ [0.0625, 0.125, 0.0625],
@@ -256,7 +256,7 @@ export class StereoProcessor{
 
                 var a = disparity.DataRows[i][j].A;
                 if (a == 0){ //not found
-                    DepthPic.DataRows[i].push(new Pixel(0,0,0,0));
+                    DepthPic.DataRows[i].push(new Pixel(0,0,0,255));
                 }
                 else {
                     var temp = Math.round(255/(disparity.DataRows[i][j].R+1));
