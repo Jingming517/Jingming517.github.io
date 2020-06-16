@@ -19,11 +19,11 @@ LoadPics(){
 	var that = this;
 	var imgLeft = new Image();
 	imgLeft.onload = function(){that.ContextLeft.drawImage(imgLeft, 0, 0);}
-	imgLeft.src = 'LeftImg.png';
+	imgLeft.src = 'LeftImg.jpeg';
 	
 	var imgRight = new Image();
 	imgRight.onload = function(){that.ContextRight.drawImage(imgRight, 0, 0); }
-	imgRight.src = 'RightImg.png';
+	imgRight.src = 'RightImg.jpeg';
  }
 
 
