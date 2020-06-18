@@ -17,6 +17,9 @@ export const IMAGE_SETTINGS = {
     "EDGE_DETECTION_Y": [ [-1, -2, -1],
                             [0,  0,  0],
                             [1, 2, 1] ],
+    "DILATION": [ [0, 1, 0],
+                [1,  1,  1],
+                [0, 1, 0] ],
 }
 export class Pixel{
     constructor(r,g,b,a){
@@ -86,6 +89,24 @@ export class Picture{
         return matrix;
         
     }
+    //convert black white image into binary image
+    binaryImg(i,j) {
+        var matrix = this.PicGrayMatrix(i, j);
+        for (let i=0; i<3; i++){
+            for (let j=0; j<3; j++){
+                if (matrix[i][j] == 255){
+                    matrix[i][j] = 1;
+                }
+                else if (matrix[i][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+                else {
+                    //console.log("Input image is not balck white image");
+                }
+            }
+        }
+        return matrix;
+    }
 }
 
 export class StereoProcessor{
@@ -129,7 +150,75 @@ export class StereoProcessor{
 			}
 		}
 		return sum;
-	}
+    }
+    xor(mat1, mat2, dimension) {
+        var result = 0;
+        for (let i=0; i<dimension; i++){
+			for (let j=0; j<dimension; j++){
+                result = mat1[i][j] ^ mat2[i][j];
+                if(result == 1) {
+                    return 255;
+                }
+			}
+        }
+        return 0;
+    }
+    BlackWhite(pic) {
+        var sum = 0;
+        var average;
+        for (let i=0; i<pic.Height; i++){
+            for (let j=0; j<pic.Width; j++){
+                sum += pic.DataRows[i][j].Gray;
+            }
+        }
+        average = Math.round(sum / (pic.Height * pic.Width));
+        var BitPic = new Picture(pic.Width, pic.Height);
+        for (let i=0; i<pic.Height; i++){
+            for (let j=0; j<pic.Width; j++){
+                if(pic.DataRows[i][j] > average){
+                    BlurPic.DataRows[i].push(new Pixel(255, 255, 255, 255));
+                }
+                else {
+                    BlurPic.DataRows[i].push(new Pixel(0, 0, 0, 255));
+                }
+            }
+        }
+        return BitPic;
+    }
+    GaussianBlur(pic) {
+        var BlurPic = new Picture(pic.Width, pic.Height);
+        for (let i=0; i<pic.Height; i++){
+            for (let j=0; j<pic.Width; j++){
+                if(i==0||i==pic.Width-1||j==0||j==pic.Width-1){
+                    var edgeBlur = pic.DataRows[i][j].Gray;
+                    BlurPic.DataRows[i].push(new Pixel(edgeBlur, edgeBlur, edgeBlur, 255));
+                }
+                else{
+                    var blur = this.dotProduct(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.PicGrayMatrix(i, j), 3); 
+                    BlurPic.DataRows[i].push(new Pixel(blur, blur, blur, 255));
+                }
+            }
+        }
+        return BlurPic;
+    }
+    Dilation(pic) {
+        var picDila = new Picture(pic.Height, pic.Width);
+        for (let i=0; i<pic.Height; i++){
+            for (let j=0; j<pic.Width; j++){
+                if(i==0||i==pic.Width-1||j==0||j==pic.Width-1){
+                    var G = pic.DataRows[i][j].Gray;
+                    var temp = 0;
+                    if (G>0) temp = 255;
+                    picDila.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+                }
+                else{
+                    var dila = this.xor(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.binaryImg(i, j), 3); 
+                    picDila.DataRows[i].push(new Pixel(dila, dila, dila, 255));
+                }
+            }
+        }
+        return picDila;
+    }
     PreProcessing(pic, searchlen){ 
         //Cut image
         /*
@@ -142,27 +231,14 @@ export class StereoProcessor{
             }
         }
         */
-        //picDown values correct
-        //Gaussian blur
+
         var BlurPic = new Picture(pic.Width, pic.Height);
-        for (let i=0; i<pic.Height; i++){
-            for (let j=0; j<pic.Width; j++){
-                if(i==0||i==pic.Width-1||j==0||j==pic.Width-1){
-                    var edgeBlur = pic.DataRows[i][j].Gray;
-                    //var pix = new Pixel(edgeBlur, edgeBlur, edgeBlur, 255);
-                    //BlurPic.DataRows[i][j] = pix;
-                    BlurPic.DataRows[i].push(new Pixel(edgeBlur, edgeBlur, edgeBlur, 255));
-                }
-                else{
-                    var blur = this.dotProduct(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.PicGrayMatrix(i, j), 3); 
-                    var pix = new Pixel(blur, blur, blur, 255);
-                    BlurPic.DataRows[i][j] = pix;
-                    //BlurPic.DataRows[i].push(new Pixel(blur, blur, blur, 255));
-                }
-            }
-        }
-        
-        return pic;
+        BlurPic = this.GaussianBlur(pic);
+        var BWPic = new Picture(pic.Width, pic.Height);
+        BWPic = this.BlackWhite(BlurPic);
+        var DilaPic = new Picture(pic.Width, pic.Height);
+        DilaPic = this.Dilation(BlurPic);
+        return DilaPic;
     }
     Calmaxdisp(leftPic, i){  //maximum number of pixels search left
         var maxdisp;
@@ -207,7 +283,7 @@ export class StereoProcessor{
     */
     
     disparity(leftPic, rightPic, startpos, maxdisp){
-        var rtn = new Picture(leftPic.Width, leftPic.Height);
+        var rtn = new Picture(IMAGE_SETTINGS.OUTPUT_IMG_WIDTH, IMAGE_SETTINGS.OUTPUT_IMG_HEIGHT);
         var threshlod = this.CalThreshold(leftPic);  //maximum pixel difference
         var count;
         
@@ -232,7 +308,6 @@ export class StereoProcessor{
                 }
             }
         }
-        //this.disparity(leftPic, rightPic, startpos, maxdisp-1);
         return rtn;
     }
     
@@ -240,7 +315,7 @@ export class StereoProcessor{
     GetDisparityMap(searchlen, tolerance){
         var left = this.PreProcessing(this.LeftPic, searchlen);   
         var right = this.PreProcessing(this.RightPic, searchlen);
-        var maxdisp = this.Calmaxdisp(left, 0);    //5
+        var maxdisp = this.Calmaxdisp(left, 0);  
 		var dispPic = this.disparity(left, right, 0, maxdisp);
         return dispPic;
         
@@ -248,9 +323,8 @@ export class StereoProcessor{
        
 
     GetDepthMap(searchlen, tolerance,focus,base){
-        var disparity = this.GetDisparityMap(searchlen, tolerance); //Picture
+        var disparity = this.GetDisparityMap(searchlen, tolerance);
         var DepthPic = new Picture(disparity.Width, disparity.Height);
-        var max_temp = 0;
         for (let i=0; i<disparity.Height; i++){
             for (let j=0; j<disparity.Width; j++){
 
@@ -266,7 +340,6 @@ export class StereoProcessor{
                 
             }
         }
-        //return this.PreProcessing(DepthPic, 0);
         return DepthPic;
     }
 }
@@ -356,27 +429,4 @@ export class StereoProcessor{
         }
         return DispPic;
 
-
-
-
-
-                            var r;
-                    var g;
-                    var b;
-                    if(temp < 70){
-                        r = temp + 170;
-                        g = 0;
-                        b = 0;
-                    }
-                    else if(temp <170){
-                        r = 0;
-                        g = temp + 85;
-                        b = 0;
-                    }
-                    else {
-                        r = 0;
-                        g = 0;
-                        b = temp;
-                    }
-        */
 
