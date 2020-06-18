@@ -101,7 +101,7 @@ export class Picture{
                     matrix[i][j] = 0;
                 }
                 else {
-                    //console.log("Input image is not balck white image");
+                    console.log("binaryImg error");
                 }
             }
         }
@@ -165,21 +165,20 @@ export class StereoProcessor{
     }
     BlackWhite(pic) {
         var sum = 0;
-        var average;
         for (let i=0; i<pic.Height; i++){
             for (let j=0; j<pic.Width; j++){
                 sum += pic.DataRows[i][j].Gray;
             }
         }
-        average = Math.round(sum / (pic.Height * pic.Width));
+        var average = Math.round(sum / (pic.Height * pic.Width));
         var BitPic = new Picture(pic.Width, pic.Height);
         for (let i=0; i<pic.Height; i++){
             for (let j=0; j<pic.Width; j++){
-                if(pic.DataRows[i][j] > average){
-                    BlurPic.DataRows[i].push(new Pixel(255, 255, 255, 255));
+                if(pic.DataRows[i][j].Gray > average){
+                    BitPic.DataRows[i].push(new Pixel(255, 255, 255, 255));
                 }
                 else {
-                    BlurPic.DataRows[i].push(new Pixel(0, 0, 0, 255));
+                    BitPic.DataRows[i].push(new Pixel(0, 0, 0, 255));
                 }
             }
         }
@@ -220,25 +219,14 @@ export class StereoProcessor{
         return picDila;
     }
     PreProcessing(pic, searchlen){ 
-        //Cut image
-        /*
-        var picDown = new Picture(IMAGE_SETTINGS.OUTPUT_IMG_HEIGHT, IMAGE_SETTINGS.OUTPUT_IMG_WIDTH);
-        for (let m=0; m<IMAGE_SETTINGS.OUTPUT_IMG_HEIGHT; m++){
-            for (let n=0; n<IMAGE_SETTINGS.OUTPUT_IMG_WIDTH; n++){
-                var row = Math.floor(m*(pic.Height-1)/IMAGE_SETTINGS.OUTPUT_IMG_HEIGHT) || (pic.Height-1); //
-                var col = Math.floor(n*(pic.Width-1)/IMAGE_SETTINGS.OUTPUT_IMG_WIDTH) || (pic.Width-1);
-                picDown.DataRows[m][n] = pic.DataRows[row][col];
-            }
-        }
-        */
 
         var BlurPic = new Picture(pic.Width, pic.Height);
         BlurPic = this.GaussianBlur(pic);
         var BWPic = new Picture(pic.Width, pic.Height);
         BWPic = this.BlackWhite(BlurPic);
-        var DilaPic = new Picture(pic.Width, pic.Height);
-        DilaPic = this.Dilation(BlurPic);
-        return DilaPic;
+        //var DilaPic = new Picture(pic.Width, pic.Height);
+        //DilaPic = this.Dilation(BWPic);
+        return BWPic;
     }
     Calmaxdisp(leftPic, i){  //maximum number of pixels search left
         var maxdisp;
@@ -317,8 +305,8 @@ export class StereoProcessor{
         var right = this.PreProcessing(this.RightPic, searchlen);
         var maxdisp = this.Calmaxdisp(left, 0);  
 		var dispPic = this.disparity(left, right, 0, maxdisp);
-        return dispPic;
-        
+        //return dispPic;
+        return left;
     }
        
 
@@ -337,10 +325,10 @@ export class StereoProcessor{
                     //DepthPic.DataRows[i].push(new Pixel(r, g, b, 255));
                     DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
                 }
-                
             }
         }
-        return DepthPic;
+        //return DepthPic;
+        return disparity;
     }
 }
 
@@ -429,4 +417,4 @@ export class StereoProcessor{
         }
         return DispPic;
 
-
+*/
