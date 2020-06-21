@@ -109,6 +109,139 @@ export class Picture{
     }
 }
 
+export function dotProduct(mat1, mat2, dimension){
+    var sum = 0;
+    for (let i=0; i<dimension; i++){
+        for (let j=0; j<dimension; j++){
+            sum += mat1[i][j] * mat2[i][j];
+        }
+    }
+    return sum;
+}
+export function xor(mat1, mat2, dimension) {
+    var result = 0;
+    for (let i=0; i<dimension; i++){
+        for (let j=0; j<dimension; j++){
+            result = mat1[i][j] ^ mat2[i][j];
+            if(result == 1) {
+                return 255;
+            }
+        }
+    }
+    return 0;
+}
+//input grayscale pic
+export function GrayscaleDilation(pic) {
+    var GDPic = new Picture(pic.Width, pic.Height);
+    for (let i=0; i<pic.Height; i++){
+        for (let j=0; j<pic.Width; j++){
+            if(i==0||i==pic.Height-1||j==0||j==pic.Width-1){
+                var temp = pic.DataRows[i][j].Gray;
+                GDPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+            }
+            else {
+                var maxgray = Math.max(pic.DataRows[i-1][j].Gray, pic.DataRows[i+1][j].Gray, pic.DataRows[i][j-1].Gray, pic.DataRows[i][j+1].Gray);
+            GDPic.DataRows[i].push(new Pixel(maxgray, maxgray, maxgray, 255));
+            }
+        }
+    }
+    return GDPic;
+}
+export function GrayscaleErosion(pic) {
+    var GEPic = new Picture(pic.Width, pic.Height);
+    for (let i=0; i<pic.Height; i++){
+        for (let j=0; j<pic.Width; j++){
+            if(i==0||i==pic.Height-1||j==0||j==pic.Width-1){
+                var temp = pic.DataRows[i][j].Gray;
+                GEPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+            }
+            else {
+                var mingray = Math.min(pic.DataRows[i-1][j].Gray, pic.DataRows[i+1][j].Gray, pic.DataRows[i][j-1].Gray, pic.DataRows[i][j+1].Gray);
+                GEPic.DataRows[i].push(new Pixel(mingray, mingray, mingray, 255));
+            } 
+        }
+    }
+    return GEPic;
+}
+export function GrayscaleOpening(pic) {
+    var GEpic = GrayscaleErosion(pic);
+    var GDpic = GrayscaleDilation(GEpic);
+    return GDpic;
+}
+export function GrayscaleClosing(pic) {
+    var GDpic = GrayscaleDilation(pic);
+    var GEpic = GrayscaleErosion(GDpic);
+    return GEpic;
+}
+export function MorphologicalSmoothing(pic) {
+    var GOpic = GrayscaleOpening(pic);
+    var GCpic = GrayscaleClosing(GOpic);
+    return GCpic;
+}
+
+export function BlackWhite(pic) {
+    var sum = 0;
+    for (let i=0; i<pic.Height; i++){
+        for (let j=0; j<pic.Width; j++){
+            sum += pic.DataRows[i][j].Gray;
+        }
+    }
+    var average = Math.round(sum / (pic.Height * pic.Width));
+    var BitPic = new Picture(pic.Width, pic.Height);
+    for (let i=0; i<pic.Height; i++){
+        for (let j=0; j<pic.Width; j++){
+            if(pic.DataRows[i][j].Gray > average){
+                BitPic.DataRows[i].push(new Pixel(255, 255, 255, 255));
+            }
+            else {
+                BitPic.DataRows[i].push(new Pixel(0, 0, 0, 255));
+            }
+        }
+    }
+    return BitPic;
+}
+
+export function GaussianBlur(pic) {
+    var BlurPic = new Picture(pic.Width, pic.Height);
+    for (let i=0; i<pic.Height; i++){
+        for (let j=0; j<pic.Width; j++){
+            if(i==0||i==pic.Height-1||j==0||j==pic.Width-1){
+                var edgeBlur = pic.DataRows[i][j].Gray;
+                BlurPic.DataRows[i].push(new Pixel(edgeBlur, edgeBlur, edgeBlur, 255));
+            }
+            else{
+                var blur = dotProduct(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.PicGrayMatrix(i, j), 3); 
+                BlurPic.DataRows[i].push(new Pixel(blur, blur, blur, 255));
+            }
+        }
+    }
+    return BlurPic;
+}
+
+
+export function Dilation(pic) {
+    //dilation for binary images
+    var picDila = new Picture(pic.Height, pic.Width);
+    for (let i=0; i<pic.Height; i++){
+        for (let j=0; j<pic.Width; j++){
+            if(i==0||i==pic.Width-1||j==0||j==pic.Width-1){
+                var G = pic.DataRows[i][j].Gray;
+                var temp = 0;
+                if (G>0) temp = 255;
+                picDila.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+            }
+            else{
+                var dila = xor(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.binaryImg(i, j), 3); 
+                picDila.DataRows[i].push(new Pixel(dila, dila, dila, 255));
+            }
+        }
+    }
+    return picDila;
+}
+
+
+
+
 export class StereoProcessor{
     constructor(cOut, picLeft, picRight){
         this.OutputCanvas = cOut || {};
@@ -126,15 +259,14 @@ export class StereoProcessor{
         picL.LoadImgData(dataL, lw, lh);
         var picR = new Picture(rw, rh);
         picR.LoadImgData(dataR, rw, rh);
-        this.LeftPic = picL; //check - correct data
+        this.LeftPic = picL; 
         this.RightPic = picR;
-        //LeftPic RightPic values correct
     }
     LoadImagesFromCanvas(leftC, rightC){
         var cxtL = leftC.getContext("2d");
         var cxtR = rightC.getContext("2d");
-        var dataL = cxtL.getImageData(0,0,leftC.width,leftC.height);  //correct data
-        var dataR = cxtR.getImageData(0,0,rightC.width,rightC.height);  //correct data
+        var dataL = cxtL.getImageData(0,0,leftC.width,leftC.height);  
+        var dataR = cxtR.getImageData(0,0,rightC.width,rightC.height); 
 
         this.LoadImagesFromImgData(dataL,leftC.width,leftC.height,dataR,rightC.width,rightC.height);
     }
@@ -142,102 +274,36 @@ export class StereoProcessor{
         this.Kernal = kernal || this.Kernal;
     }
 
-    dotProduct(mat1, mat2, dimension){
-		var sum = 0;
-		for (let i=0; i<dimension; i++){
-			for (let j=0; j<dimension; j++){
-				sum += mat1[i][j] * mat2[i][j];
-			}
-		}
-		return sum;
-    }
-    xor(mat1, mat2, dimension) {
-        var result = 0;
-        for (let i=0; i<dimension; i++){
-			for (let j=0; j<dimension; j++){
-                result = mat1[i][j] ^ mat2[i][j];
-                if(result == 1) {
-                    return 255;
-                }
-			}
-        }
-        return 0;
-    }
-    BlackWhite(pic) {
-        var sum = 0;
-        for (let i=0; i<pic.Height; i++){
-            for (let j=0; j<pic.Width; j++){
-                sum += pic.DataRows[i][j].Gray;
-            }
-        }
-        var average = Math.round(sum / (pic.Height * pic.Width));
-        var BitPic = new Picture(pic.Width, pic.Height);
-        for (let i=0; i<pic.Height; i++){
-            for (let j=0; j<pic.Width; j++){
-                if(pic.DataRows[i][j].Gray > average){
-                    BitPic.DataRows[i].push(new Pixel(255, 255, 255, 255));
-                }
-                else {
-                    BitPic.DataRows[i].push(new Pixel(0, 0, 0, 255));
-                }
-            }
-        }
-        return BitPic;
-    }
-    GaussianBlur(pic) {
-        var BlurPic = new Picture(pic.Width, pic.Height);
-        for (let i=0; i<pic.Height; i++){
-            for (let j=0; j<pic.Width; j++){
-                if(i==0||i==pic.Width-1||j==0||j==pic.Width-1){
-                    var edgeBlur = pic.DataRows[i][j].Gray;
-                    BlurPic.DataRows[i].push(new Pixel(edgeBlur, edgeBlur, edgeBlur, 255));
-                }
-                else{
-                    var blur = this.dotProduct(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.PicGrayMatrix(i, j), 3); 
-                    BlurPic.DataRows[i].push(new Pixel(blur, blur, blur, 255));
-                }
-            }
-        }
-        return BlurPic;
-    }
-    Dilation(pic) {
-        var picDila = new Picture(pic.Height, pic.Width);
-        for (let i=0; i<pic.Height; i++){
-            for (let j=0; j<pic.Width; j++){
-                if(i==0||i==pic.Width-1||j==0||j==pic.Width-1){
-                    var G = pic.DataRows[i][j].Gray;
-                    var temp = 0;
-                    if (G>0) temp = 255;
-                    picDila.DataRows[i].push(new Pixel(temp, temp, temp, 255));
-                }
-                else{
-                    var dila = this.xor(IMAGE_SETTINGS.KERNAL_GAUSSIAN3x3, pic.binaryImg(i, j), 3); 
-                    picDila.DataRows[i].push(new Pixel(dila, dila, dila, 255));
-                }
-            }
-        }
-        return picDila;
-    }
-    PreProcessing(pic, searchlen){ 
 
+
+
+    PreProcessing(pic){ 
+        /*
         var BlurPic = new Picture(pic.Width, pic.Height);
-        BlurPic = this.GaussianBlur(pic);
+        BlurPic = ImageProcessor.GaussianBlur(pic);
         var BWPic = new Picture(pic.Width, pic.Height);
-        BWPic = this.BlackWhite(BlurPic);
-        //var DilaPic = new Picture(pic.Width, pic.Height);
-        //DilaPic = this.Dilation(BWPic);
+        BWPic = ImageProcessor.BlackWhite(BlurPic);
+        var DilaPic = new Picture(pic.Width, pic.Height);
+        DilaPic = ImageProcessor.Dilation(BWPic);
         return BWPic;
+        */
+
+        var SmoothPic = new Picture(pic.Width, pic.Height);
+        SmoothPic = MorphologicalSmoothing(pic);
+        var Blur = GaussianBlur(SmoothPic);
+        //return SmoothPic;
+        return Blur;
     }
     Calmaxdisp(leftPic, i){  //maximum number of pixels search left
         var maxdisp;
-        if (leftPic.Width-i > 50){
-            var maxdisp = Math.round((leftPic.Width - i)/50);
+        if (leftPic.Width-i > 30){
+            var maxdisp = Math.round((leftPic.Width - i)/30);
         }
         else maxdisp = 0;
-        return maxdisp;
+        return 400;
     }
     CalThreshold(pic){ //calculate maximum pixel difference
-        return Math.round(pic.Width/100);
+        return Math.round(pic.Width/50);
     }
     CompareDiff(rtn, diff, i, j){
         var value = rtn.DataRows[j][i].Gray;
@@ -301,8 +367,8 @@ export class StereoProcessor{
     
 
     GetDisparityMap(searchlen, tolerance){
-        var left = this.PreProcessing(this.LeftPic, searchlen);   
-        var right = this.PreProcessing(this.RightPic, searchlen);
+        var left = this.PreProcessing(this.LeftPic);   
+        var right = this.PreProcessing(this.RightPic);
         var maxdisp = this.Calmaxdisp(left, 0);  
 		var dispPic = this.disparity(left, right, 0, maxdisp);
         //return dispPic;
@@ -322,8 +388,16 @@ export class StereoProcessor{
                 }
                 else {
                     var temp = Math.round(255/(disparity.DataRows[i][j].R+1));
+                    if(temp<100){
+                        DepthPic.DataRows[i].push(new Pixel(temp, 0, 0, 255));
+                    }
+                    else if (temp <200){
+                        DepthPic.DataRows[i].push(new Pixel(0, temp, 0, 255));
+                    }
+                    else {
+                        DepthPic.DataRows[i].push(new Pixel(0, 0, temp, 255));
+                    }
                     //DepthPic.DataRows[i].push(new Pixel(r, g, b, 255));
-                    DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
                 }
             }
         }
@@ -333,7 +407,7 @@ export class StereoProcessor{
 }
 
 
-//
+
 
 
 
@@ -382,39 +456,4 @@ export class StereoProcessor{
                 d = count;
             }
         }
-
-
-        var DispPic = new Picture(left.Width, left.Height);
-        for(let i=0; i<(left.Width); i++){
-            for (let j=0; j<left.Height; j++){
-                //pixel
-                var coeff = 1.4;
-                var sign = 1;
-                var min = 256;
-                var PixDisp = d;
-                for (let count=0; count<9; count++){
-                    if(i-4<0||i+d-4>=left.Width){
-                        PixDisp = 255;
-                    }
-                    else {
-                        var temp = coeff * Math.abs(left.DataRows[(i+d-4)][j].Gray - right.DataRows[(i-4)][j].Gray);
-                        if(temp < min){
-                            min = temp;
-                            PixDisp = count;
-                        }
-                        if(coeff == 1.0) sign = -1;
-                        coeff = coeff - sign * 0.1;
-                    }
-                    
-                }
-                if (PixDisp > 100){ //cannot find corresponding point
-                    DispPic.DataRows[i].push(new Pixel(0, 0, 0, 0));
-                }
-                else {
-                    DispPic.DataRows[i].push(new Pixel(Math.round(PixDisp*255/100), 0, 0, 255));
-                }                
-            }
-        }
-        return DispPic;
-
 */
