@@ -296,11 +296,11 @@ export class StereoProcessor{
     }
     Calmaxdisp(leftPic, i){  //maximum number of pixels search left
         var maxdisp;
-        if (leftPic.Width-i > 30){
-            var maxdisp = Math.round((leftPic.Width - i)/30);
+        if (leftPic.Width-i > 10){
+            var maxdisp = Math.round((leftPic.Width - i)/10);
         }
         else maxdisp = 0;
-        return 400;
+        return maxdisp;
     }
     CalThreshold(pic){ //calculate maximum pixel difference
         return Math.round(pic.Width/50);
@@ -371,8 +371,8 @@ export class StereoProcessor{
         var right = this.PreProcessing(this.RightPic);
         var maxdisp = this.Calmaxdisp(left, 0);  
 		var dispPic = this.disparity(left, right, 0, maxdisp);
-        //return dispPic;
-        return left;
+        return dispPic;
+        //return left;
     }
        
 
@@ -384,25 +384,29 @@ export class StereoProcessor{
 
                 var a = disparity.DataRows[i][j].A;
                 if (a == 0){ //not found
-                    DepthPic.DataRows[i].push(new Pixel(0,0,0,255));
+                    DepthPic.DataRows[i].push(new Pixel(255,255,255,255)); //white
                 }
                 else {
-                    var temp = Math.round(255/(disparity.DataRows[i][j].R+1));
-                    if(temp<100){
+                    var temp1 = Math.round(255/(disparity.DataRows[i][j].R+1));
+                    var temp = Math.round(temp1/2);
+                    DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+                    /*
+                    if(temp<200){
                         DepthPic.DataRows[i].push(new Pixel(temp, 0, 0, 255));
                     }
-                    else if (temp <200){
+                    else if (temp <255){
                         DepthPic.DataRows[i].push(new Pixel(0, temp, 0, 255));
                     }
                     else {
                         DepthPic.DataRows[i].push(new Pixel(0, 0, temp, 255));
                     }
+                    */
                     //DepthPic.DataRows[i].push(new Pixel(r, g, b, 255));
                 }
             }
         }
-        //return DepthPic;
-        return disparity;
+        return DepthPic;
+        //return disparity;
     }
 }
 
