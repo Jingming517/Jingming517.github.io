@@ -242,6 +242,8 @@ export function Dilation(pic) {
 
 
 
+
+
 export class StereoProcessor{
     constructor(cOut, picLeft, picRight){
         this.OutputCanvas = cOut || {};
@@ -389,7 +391,19 @@ export class StereoProcessor{
                 else {
                     var temp1 = Math.round(255/(disparity.DataRows[i][j].R+1));
                     var temp = Math.round(temp1/2);
-                    DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+                    //DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+                    
+                    if (temp<25) DepthPic.DataRows[i].push(new Pixel(232, 36, 0, 255));
+                    else if (temp<50) DepthPic.DataRows[i].push(new Pixel(222, 55, 0, 255));
+                    else if (temp<100) DepthPic.DataRows[i].push(new Pixel(203, 94, 0, 255));
+                    else if (temp<150) DepthPic.DataRows[i].push(new Pixel(194, 114, 0, 255));
+                    else if (temp<200) DepthPic.DataRows[i].push(new Pixel(185, 134, 0, 255));
+                    else if (temp<250) DepthPic.DataRows[i].push(new Pixel(175, 153, 0, 255));
+                    else if (temp<300) DepthPic.DataRows[i].push(new Pixel(166, 173, 0, 255));
+                    else if (temp<350) DepthPic.DataRows[i].push(new Pixel(156, 192, 0, 255));
+                    else if (temp<400) DepthPic.DataRows[i].push(new Pixel(147, 212, 0, 255));
+                    else if (temp<450) DepthPic.DataRows[i].push(new Pixel(128, 231, 0, 255));
+                    else DepthPic.DataRows[i].push(new Pixel(147, 250, 0, 255));
                     /*
                     if(temp<200){
                         DepthPic.DataRows[i].push(new Pixel(temp, 0, 0, 255));
@@ -406,7 +420,6 @@ export class StereoProcessor{
             }
         }
         return DepthPic;
-        //return disparity;
     }
 }
 
