@@ -293,8 +293,8 @@ export class StereoProcessor{
         var SmoothPic = new Picture(pic.Width, pic.Height);
         SmoothPic = MorphologicalSmoothing(pic);
         var Blur = GaussianBlur(SmoothPic);
-        //return SmoothPic;
-        return Blur;
+        return SmoothPic;
+        //return Blur;
     }
     Calmaxdisp(leftPic, i){  //maximum number of pixels search left
         var maxdisp;
