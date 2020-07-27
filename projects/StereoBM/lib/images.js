@@ -391,8 +391,8 @@ export class StereoProcessor{
                 else {
                     var temp1 = Math.round(255/(disparity.DataRows[i][j].R+1));
                     var temp = Math.round(temp1/2);
-                    //DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
-                    
+                    DepthPic.DataRows[i].push(new Pixel(temp, temp, temp, 255));
+                    /*
                     if (temp<25) DepthPic.DataRows[i].push(new Pixel(232, 36, 0, 255));
                     else if (temp<50) DepthPic.DataRows[i].push(new Pixel(222, 55, 0, 255));
                     else if (temp<100) DepthPic.DataRows[i].push(new Pixel(203, 94, 0, 255));
